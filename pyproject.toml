@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=64", "setuptools-scm>=8"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "aging-network"
+version = "0.1.0"
+description = "Coupled dynamical systems model of aging with intervention hooks."
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+    "numpy",
+    "matplotlib",
+]
+authors = [{ name = "Hackathon team" }]
+
+[project.optional-dependencies]
+dev = ["jupyter"]
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]

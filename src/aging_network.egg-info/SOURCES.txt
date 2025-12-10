@@ -1,0 +1,13 @@
+README.md
+pyproject.toml
+src/aging_network/__init__.py
+src/aging_network/config.py
+src/aging_network/interventions.py
+src/aging_network/model.py
+src/aging_network/plotting.py
+src/aging_network/simulation.py
+src/aging_network.egg-info/PKG-INFO
+src/aging_network.egg-info/SOURCES.txt
+src/aging_network.egg-info/dependency_links.txt
+src/aging_network.egg-info/requires.txt
+src/aging_network.egg-info/top_level.txt
