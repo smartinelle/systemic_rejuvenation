@@ -19,6 +19,9 @@ Network-based dynamical model of aging that tracks fast functional health (`X`) 
 - `notebooks/02_main_results.ipynb` – reproduces key figures
 - `model.ipynb` – original notebook (monolithic prototype) kept for reference
 
+## Model presentation
+A short LaTeX write-up of the model equations and assumptions lives in `systemic_rejuvenation.pdf` (repo root) if you prefer a concise, typeset overview.
+
 ## Setup
 ```bash
 python -m venv .venv
