@@ -49,14 +49,16 @@ export async function initializePyodide(
 import numpy as np
 
 class SimulationConfig:
-    def __init__(self, n_subsystems=3, t_max=100.0, dt=0.1,
-                 func_threshold=0.3, death_threshold=0.1,
-                 r=0.03, k=0.02, beta=0.5, alpha=0.05):
-        self.n_subsystems = n_subsystems
-        self.t_max = t_max
+    def __init__(self, start_age=30.0, years=90.0, dt=0.1,
+                 func_threshold=0.6, death_threshold=0.25, noise_std=0.005,
+                 n_subsystems=3, r=0.03, k=0.02, beta=0.5, alpha=0.05):
+        self.start_age = start_age
+        self.years = years
         self.dt = dt
         self.func_threshold = func_threshold
         self.death_threshold = death_threshold
+        self.noise_std = noise_std
+        self.n_subsystems = n_subsystems
         self.r = r
         self.k = k
         self.beta = beta
@@ -106,8 +108,8 @@ def run_sim(intervention="none", sim_config=None):
     """Run aging simulation."""
     config = sim_config if sim_config is not None else SimulationConfig()
 
-    n_steps = int(config.t_max / config.dt)
-    ages = np.linspace(20, 20 + config.t_max, n_steps)
+    n_steps = int(config.years / config.dt)
+    ages = np.linspace(config.start_age, config.start_age + config.years, n_steps)
 
     X_hist = np.zeros((n_steps, config.n_subsystems))
     D_hist = np.zeros((n_steps, config.n_subsystems))
@@ -120,8 +122,8 @@ def run_sim(intervention="none", sim_config=None):
 
     healthspan_reached = False
     lifespan_reached = False
-    healthspan = config.t_max
-    lifespan = config.t_max
+    healthspan = config.years
+    lifespan = config.years
 
     for i in range(n_steps):
         X_hist[i] = X
@@ -129,11 +131,11 @@ def run_sim(intervention="none", sim_config=None):
 
         # Check thresholds
         if not healthspan_reached and np.min(X) < config.func_threshold:
-            healthspan = ages[i] - 20
+            healthspan = ages[i] - config.start_age
             healthspan_reached = True
 
         if not lifespan_reached and np.min(X) < config.death_threshold:
-            lifespan = ages[i] - 20
+            lifespan = ages[i] - config.start_age
             lifespan_reached = True
             break
 
