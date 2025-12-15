@@ -9,6 +9,9 @@ import InterventionTabs from './components/InterventionTabs';
 import ParameterPanel from './components/ParameterPanel';
 import TrajectoryChart from './components/TrajectoryChart';
 import MetricsPanel from './components/MetricsPanel';
+import Header from './components/Header';
+import NetworkGraph from './components/NetworkGraph';
+import MonteCarloPanel from './components/MonteCarloPanel';
 
 export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
@@ -80,31 +83,12 @@ export default function Home() {
   }
 
   return (
-    <main className="min-h-screen p-4">
-      {/* Header */}
-      <header className="mb-8 flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-bio-cyan to-bio-violet bg-clip-text text-transparent">
-            Aging Network Model
-          </h1>
-          <p className="text-gray-400 mt-1">
-            Interactive exploration of systemic aging dynamics
-          </p>
-        </div>
-        <div className="flex gap-4">
-          <a
-            href="https://github.com/smartinelle/systemic_rejuvenation"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-bio-cyan hover:text-bio-cyan/80 transition-colors"
-          >
-            GitHub
-          </a>
-        </div>
-      </header>
+    <main className="min-h-screen">
+      <Header />
 
       {/* Main Content */}
-      <div className="grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-6">
+      <div className="p-6">
+        <div className="grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-6 max-w-7xl mx-auto">
         {/* Sidebar */}
         <aside className="space-y-6">
           <InterventionTabs
@@ -129,10 +113,18 @@ export default function Home() {
                 config={config}
                 intervention={intervention}
               />
-              <MetricsPanel
-                result={result}
-                baseline={baselineResult}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <MetricsPanel
+                  result={result}
+                  baseline={baselineResult}
+                  intervention={intervention}
+                />
+                <NetworkGraph result={result} />
+              </div>
+              <MonteCarloPanel
                 intervention={intervention}
+                config={config}
+                onComplete={(results) => console.log('Monte Carlo complete:', results)}
               />
             </>
           )}
@@ -148,6 +140,7 @@ export default function Home() {
               <p className="text-red-400 text-sm">{error}</p>
             </div>
           )}
+        </div>
         </div>
       </div>
     </main>

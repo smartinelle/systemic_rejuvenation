@@ -5,8 +5,22 @@ import './globals.css';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'Aging Network Model',
-  description: 'Interactive exploration of systemic aging dynamics',
+  title: 'Aging Network Model | Interactive Systemic Rejuvenation Simulator',
+  description: 'Explore coupled dynamical systems of aging across cardiovascular, musculoskeletal, and neurological subsystems. Simulate interventions like exercise, drugs, parabiosis, and organ replacement.',
+  keywords: ['aging', 'longevity', 'rejuvenation', 'systems biology', 'computational model', 'healthspan', 'lifespan'],
+  authors: [{ name: 'Sacha Martinelle' }],
+  openGraph: {
+    title: 'Aging Network Model',
+    description: 'Interactive exploration of systemic aging dynamics and rejuvenation interventions',
+    url: 'https://systemic-rejuvenation.vercel.app',
+    siteName: 'Aging Network Model',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Aging Network Model',
+    description: 'Interactive exploration of systemic aging dynamics',
+  },
 };
 
 export default function RootLayout({

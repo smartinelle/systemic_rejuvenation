@@ -10,15 +10,18 @@
   },
   "description": "Interactive web interface for the aging network model",
   "dependencies": {
+    "@types/d3": "^7.4.3",
     "@types/node": "^25.0.2",
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",
+    "d3": "^7.9.0",
     "katex": "^0.16.27",
     "lucide-react": "^0.561.0",
     "next": "^16.0.10",
     "plotly.js": "^3.3.1",
     "react": "^19.2.3",
     "react-dom": "^19.2.3",
+    "react-katex": "^3.1.0",
     "react-plotly.js": "^2.6.0",
     "typescript": "^5.9.3"
   },

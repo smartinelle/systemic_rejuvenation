@@ -14,7 +14,9 @@
       "Bash(dynamic\" error in Next.js static export.\n\nChanges:\n- Inline full aging model simulation code in pyodide-loader.ts\n- Remove sys.path.append and module import dependencies\n- Include SimulationConfig, SimulationResult, run_sim, and dynamics\n- Self-contained solution that works with static export\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>\nEOF\n)\")",
       "Bash(npm run build:*)",
       "Bash(npm run dev:*)",
-      "Bash(npm uninstall:*)"
+      "Bash(npm uninstall:*)",
+      "Bash(lsof:*)",
+      "Bash(xargs kill:*)"
     ]
   }
 }

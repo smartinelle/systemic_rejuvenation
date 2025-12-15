@@ -52,7 +52,17 @@ export default function TrajectoryChart({ result, config, intervention }: Trajec
     line: { color: '#DC2626', width: 1, dash: 'dot' as const },
   };
 
-  const data = [...xTraces, ...dTraces, funcThresholdTrace, deathThresholdTrace];
+  // Intervention marker (vertical line)
+  const interventionAge = intervention === 'exercise' ? 30 : intervention === 'drug' ? 40 : intervention === 'parabiosis' ? 50 : intervention.startsWith('organ') ? 50 : null;
+  const interventionMarker = interventionAge && intervention !== 'none' ? {
+    x: [interventionAge, interventionAge],
+    y: [0, 1],
+    mode: 'lines' as const,
+    name: 'Intervention Start',
+    line: { color: '#8B5CF6', width: 2, dash: 'dashdot' as const },
+  } : null;
+
+  const data = [...xTraces, ...dTraces, funcThresholdTrace, deathThresholdTrace, ...(interventionMarker ? [interventionMarker] : [])];
 
   const layout = {
     title: {
