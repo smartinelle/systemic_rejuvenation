@@ -31,6 +31,7 @@ export interface SimulationResult {
   lifespan: number;
   mean_X: number[];
   mean_D: number[];
+  cause_of_death: number | null;  // Index of organ system that caused death (0=Cardio, 1=Musc, 2=Neuro)
 }
 
 export type InterventionType = 'none' | 'exercise' | 'drug' | 'parabiosis' | 'organ1' | 'organ2' | 'organ3';

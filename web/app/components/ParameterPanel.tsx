@@ -157,10 +157,10 @@ export default function ParameterPanel({
       <div className="mt-4 p-3 bg-bio-cyan/10 rounded-lg border border-bio-cyan/30">
         <p className="text-xs text-gray-300">
           {intervention === 'none' && 'Baseline simulation with no interventions.'}
-          {intervention === 'exercise' && 'Exercise: Regular physical activity that boosts recovery and reduces damage accumulation.'}
-          {intervention === 'drug' && 'Drug therapy: Pharmaceutical intervention that reduces systemic damage.'}
-          {intervention === 'parabiosis' && 'Parabiosis: Young blood transfusion that enhances recovery and reduces aging markers.'}
-          {intervention.startsWith('organ') && `Organ replacement: ${intervention === 'organ1' ? 'Cardiovascular' : intervention === 'organ2' ? 'Musculoskeletal' : 'Neurological'} system replacement at age 65.`}
+          {intervention === 'exercise' && 'Exercise: Boosts recovery by 30% and reduces damage accumulation by 30% (starts age 40).'}
+          {intervention === 'drug' && 'Drug therapy: Reduces shock probability and magnitude by 60% (starts age 60).'}
+          {intervention === 'parabiosis' && 'Parabiosis: Time-decaying boost to recovery (+40%), decay reduction (20%), and damage mitigation (40%) for 8 years starting at age 55.'}
+          {intervention.startsWith('organ') && `Organ replacement at age 65: ${intervention === 'organ1' ? 'Cardio only' : intervention === 'organ2' ? 'Cardio + Musc' : 'Cardio + Musc + Neuro'}.`}
         </p>
       </div>
     </div>
