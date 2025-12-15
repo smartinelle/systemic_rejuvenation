@@ -60,12 +60,12 @@ export default function TrajectoryChart({ result, config, intervention }: Trajec
       font: { color: '#E5E7EB' },
     },
     xaxis: {
-      title: 'Age (years)',
+      title: { text: 'Age (years)' },
       gridcolor: '#374151',
       color: '#9CA3AF',
     },
     yaxis: {
-      title: 'Value',
+      title: { text: 'Value' },
       gridcolor: '#374151',
       color: '#9CA3AF',
       range: [0, 1],
