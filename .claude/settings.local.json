@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(openspec list:*)",
+      "SlashCommand(/openspec:proposal)",
+      "Bash(mkdir:*)",
+      "Bash(git checkout:*)",
+      "Bash(openspec validate:*)",
+      "Bash(git add:*)"
+    ]
+  }
+}
