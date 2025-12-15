@@ -1,19 +1,38 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@theme {
+  --color-space-dark-900: #0A0E27;
+  --color-space-dark-800: #1A1F3A;
+  --color-bio-cyan: #00D9FF;
+  --color-bio-violet: #8B5CF6;
+  --color-bio-green: #00FF88;
+}
 
 @layer base {
   body {
-    @apply bg-gradient-to-br from-space-dark-900 to-space-dark-800 text-white;
+    background: linear-gradient(to bottom right, var(--color-space-dark-900), var(--color-space-dark-800));
+    color: white;
+    min-height: 100vh;
   }
 }
 
 @layer components {
   .glass-panel {
-    @apply backdrop-blur-md bg-white/5 border border-white/10 rounded-lg;
+    backdrop-filter: blur(12px);
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 0.5rem;
   }
 
   .glass-panel-hover {
-    @apply glass-panel hover:bg-white/10 transition-colors duration-200;
+    backdrop-filter: blur(12px);
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 0.5rem;
+    transition: background-color 200ms;
+  }
+
+  .glass-panel-hover:hover {
+    background-color: rgba(255, 255, 255, 0.1);
   }
 }
