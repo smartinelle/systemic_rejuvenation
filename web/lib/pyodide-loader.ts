@@ -36,32 +36,32 @@ export async function initializePyodide(
       onProgress?.({ stage: 'package', progress: 0.75 });
       await pyodide.runPythonAsync(`
 import numpy as np
-from dataclasses import dataclass
-from typing import Optional
 
-@dataclass
 class SimulationConfig:
-    n_subsystems: int = 3
-    t_max: float = 100.0
-    dt: float = 0.1
-    func_threshold: float = 0.3
-    death_threshold: float = 0.1
-    r: float = 0.03
-    k: float = 0.02
-    beta: float = 0.5
-    alpha: float = 0.05
+    def __init__(self, n_subsystems=3, t_max=100.0, dt=0.1,
+                 func_threshold=0.3, death_threshold=0.1,
+                 r=0.03, k=0.02, beta=0.5, alpha=0.05):
+        self.n_subsystems = n_subsystems
+        self.t_max = t_max
+        self.dt = dt
+        self.func_threshold = func_threshold
+        self.death_threshold = death_threshold
+        self.r = r
+        self.k = k
+        self.beta = beta
+        self.alpha = alpha
 
-@dataclass
 class SimulationResult:
-    ages: np.ndarray
-    X: np.ndarray
-    D: np.ndarray
-    healthspan: float
-    lifespan: float
-    mean_X: np.ndarray
-    mean_D: np.ndarray
+    def __init__(self, ages, X, D, healthspan, lifespan, mean_X, mean_D):
+        self.ages = ages
+        self.X = X
+        self.D = D
+        self.healthspan = healthspan
+        self.lifespan = lifespan
+        self.mean_X = mean_X
+        self.mean_D = mean_D
 
-def coupling_matrix(n: int) -> np.ndarray:
+def coupling_matrix(n):
     """Create default coupling matrix."""
     C = np.ones((n, n)) * 0.1
     np.fill_diagonal(C, 0.5)
@@ -73,7 +73,7 @@ def aging_dynamics(X, D, C, r, k, beta, alpha):
     dD = k * (1 - X)**2 + beta * D - alpha * X * D
     return dX, dD
 
-def apply_intervention(intervention: str, X, D, age, config):
+def apply_intervention(intervention, X, D, age, config):
     """Apply intervention effects."""
     if intervention == "exercise" and 30 <= age <= 80:
         return X + 0.01, D - 0.005
@@ -91,9 +91,9 @@ def apply_intervention(intervention: str, X, D, age, config):
             return X_new, D_new
     return X, D
 
-def run_sim(intervention: str = "none", sim_config: Optional[SimulationConfig] = None):
+def run_sim(intervention="none", sim_config=None):
     """Run aging simulation."""
-    config = sim_config or SimulationConfig()
+    config = sim_config if sim_config is not None else SimulationConfig()
 
     n_steps = int(config.t_max / config.dt)
     ages = np.linspace(20, 20 + config.t_max, n_steps)
