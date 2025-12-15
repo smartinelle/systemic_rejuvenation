@@ -16,6 +16,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <head>
+        <script src="https://cdn.jsdelivr.net/pyodide/v0.29.0/full/pyodide.js" async></script>
+      </head>
       <body className={inter.className}>{children}</body>
     </html>
   );

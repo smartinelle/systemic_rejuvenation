@@ -1,8 +1,14 @@
-import { loadPyodide, type PyodideInterface } from 'pyodide';
 import type { SimulationConfig, SimulationResult, InterventionType } from './types';
 
-let pyodideInstance: PyodideInterface | null = null;
-let initPromise: Promise<PyodideInterface> | null = null;
+// Use global loadPyodide from CDN script
+declare global {
+  interface Window {
+    loadPyodide: (config: { indexURL: string }) => Promise<any>;
+  }
+}
+
+let pyodideInstance: any = null;
+let initPromise: Promise<any> | null = null;
 
 export interface LoadingProgress {
   stage: 'pyodide' | 'numpy' | 'package' | 'complete';
@@ -11,7 +17,7 @@ export interface LoadingProgress {
 
 export async function initializePyodide(
   onProgress?: (progress: LoadingProgress) => void
-): Promise<PyodideInterface> {
+): Promise<any> {
   if (pyodideInstance) {
     return pyodideInstance;
   }
@@ -22,9 +28,14 @@ export async function initializePyodide(
 
   initPromise = (async () => {
     try {
+      // Wait for window.loadPyodide to be available from CDN script
+      while (typeof window === 'undefined' || !window.loadPyodide) {
+        await new Promise(resolve => setTimeout(resolve, 100));
+      }
+
       // Load Pyodide
       onProgress?.({ stage: 'pyodide', progress: 0.25 });
-      const pyodide = await loadPyodide({
+      const pyodide = await window.loadPyodide({
         indexURL: 'https://cdn.jsdelivr.net/pyodide/v0.29.0/full/',
       });
 
