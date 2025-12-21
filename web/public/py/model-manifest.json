@@ -1,7 +1,7 @@
 {
   "source": {
     "path": "src/aging_network",
-    "gitSha": "0b6762bc23d40313d7d28b2eb87b145f5c7a39a6"
+    "gitSha": "c012327bb79b94bc61797b23d048e6caa25395f3"
   },
   "bundle": {
     "path": "web/public/py/aging_network",
