@@ -1,0 +1,47 @@
+{
+  "source": {
+    "path": "src/aging_network",
+    "gitSha": "0b6762bc23d40313d7d28b2eb87b145f5c7a39a6"
+  },
+  "bundle": {
+    "path": "web/public/py/aging_network",
+    "files": [
+      {
+        "path": "aging_network/config.py",
+        "sha256": "1bc4a67c24c76e08630824b706bfdf0b9318bec83104cdbcdfd86291fc26900e",
+        "bytes": 4108,
+        "source": "src/aging_network/config.py",
+        "generated": false
+      },
+      {
+        "path": "aging_network/model.py",
+        "sha256": "8d23a674729dec6cce508c2689c0e68ae9bc230c7a6d512cb5eb84560892fe7e",
+        "bytes": 4792,
+        "source": "src/aging_network/model.py",
+        "generated": false
+      },
+      {
+        "path": "aging_network/interventions.py",
+        "sha256": "5a62a7b0338a8b10d40b7e7191f1525cfe06bdf3c4788f847b762d688cc0037f",
+        "bytes": 3860,
+        "source": "src/aging_network/interventions.py",
+        "generated": false
+      },
+      {
+        "path": "aging_network/simulation.py",
+        "sha256": "7b21120bb430100ab7322454334cbe1817cce7d30ba4110bb379e4b6f8e24ae1",
+        "bytes": 5561,
+        "source": "src/aging_network/simulation.py",
+        "generated": false
+      },
+      {
+        "path": "aging_network/__init__.py",
+        "sha256": "ab5c2f7837d63a2b63d473ccfcaa438c3dd93751e65cf87c3d5b3ccb33cf7311",
+        "bytes": 743,
+        "source": "generated",
+        "generated": true,
+        "note": "Web-safe shim (excludes plotting/matplotlib imports)."
+      }
+    ]
+  }
+}

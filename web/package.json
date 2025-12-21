@@ -3,10 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "predev": "node scripts/sync-aging-network-model.js",
     "dev": "next dev",
+    "prebuild": "node scripts/sync-aging-network-model.js",
     "build": "next build",
     "start": "next start",
-    "export": "next build && next export"
+    "export": "next build && next export",
+    "model:sync": "node scripts/sync-aging-network-model.js",
+    "model:check": "node scripts/check-aging-network-model-sync.js"
   },
   "description": "Interactive web interface for the aging network model",
   "dependencies": {

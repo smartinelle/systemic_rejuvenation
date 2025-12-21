@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { initializePyodide, runSimulation, type LoadingProgress } from '@/lib/pyodide-loader';
+import { initializePyodide, runSimulation, type LoadingProgress, getModelDefaults } from '@/lib/pyodide-loader';
 import type { SimulationResult, InterventionType, SimulationConfig } from '@/lib/types';
 import { DEFAULT_SIMULATION_CONFIG } from '@/lib/types';
 import SimulationEngine from './components/SimulationEngine';
@@ -29,9 +29,14 @@ export default function Home() {
       setLoadingProgress(progress);
     })
       .then(() => {
+        const defaults = getModelDefaults();
+        const simDefaults = defaults?.simulation as Partial<SimulationConfig> | undefined;
+        const initialConfig = simDefaults ? { ...DEFAULT_SIMULATION_CONFIG, ...simDefaults } : DEFAULT_SIMULATION_CONFIG;
+        setConfig(initialConfig);
+
         setIsLoading(false);
         // Run baseline simulation
-        return runSimulation('none', config);
+        return runSimulation('none', initialConfig);
       })
       .then((result) => {
         setBaselineResult(result);

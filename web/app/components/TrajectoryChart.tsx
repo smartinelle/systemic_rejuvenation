@@ -1,7 +1,9 @@
 'use client';
 
 import dynamic from 'next/dynamic';
+import { DEFAULT_INTERVENTION_CONFIG } from '@/lib/types';
 import type { SimulationResult, InterventionType, SimulationConfig } from '@/lib/types';
+import { getModelDefaults } from '@/lib/pyodide-loader';
 
 // Dynamically import Plot to avoid SSR issues
 const Plot = dynamic(() => import('react-plotly.js'), { ssr: false });
@@ -15,6 +17,16 @@ interface TrajectoryChartProps {
 const SUBSYSTEM_NAMES = ['Cardio', 'Musc', 'Neuro'];
 const X_COLORS = ['#00D9FF', '#00FF88', '#8B5CF6']; // cyan, green, violet
 const D_COLORS = ['#F59E0B', '#EF4444', '#EC4899']; // amber, red, pink
+
+function getInterventionStartAge(intervention: InterventionType): number | null {
+  if (intervention === 'none') return null;
+  const defaults = getModelDefaults()?.intervention;
+  if (intervention === 'exercise') return (defaults?.exercise_start_age ?? DEFAULT_INTERVENTION_CONFIG.exercise?.exercise_start_age) ?? null;
+  if (intervention === 'drug') return (defaults?.drug_start_age ?? DEFAULT_INTERVENTION_CONFIG.drug?.drug_start_age) ?? null;
+  if (intervention === 'parabiosis') return (defaults?.parabiosis_start_age ?? DEFAULT_INTERVENTION_CONFIG.parabiosis?.parabiosis_start_age) ?? null;
+  if (intervention.startsWith('organ')) return (defaults?.organ_replacement_age ?? DEFAULT_INTERVENTION_CONFIG[intervention]?.organ_replacement_age) ?? null;
+  return null;
+}
 
 export default function TrajectoryChart({ result, config, intervention }: TrajectoryChartProps) {
   // Prepare traces for X (solid lines)
@@ -53,8 +65,8 @@ export default function TrajectoryChart({ result, config, intervention }: Trajec
   };
 
   // Intervention marker (vertical line)
-  const interventionAge = intervention === 'exercise' ? 30 : intervention === 'drug' ? 40 : intervention === 'parabiosis' ? 50 : intervention.startsWith('organ') ? 50 : null;
-  const interventionMarker = interventionAge && intervention !== 'none' ? {
+  const interventionAge = getInterventionStartAge(intervention);
+  const interventionMarker = interventionAge !== null ? {
     x: [interventionAge, interventionAge],
     y: [0, 1],
     mode: 'lines' as const,

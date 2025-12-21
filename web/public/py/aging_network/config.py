@@ -114,7 +114,7 @@ def default_intervention_config() -> InterventionConfig:
         "organ3": np.array([0, 1, 2], dtype=int),
     }
     return InterventionConfig(
-        exercise_start_age=40.0,
+        exercise_start_age=45.0,
         exercise_recovery_gain=0.3,
         exercise_damage_reduction=0.3,
         drug_start_age=60.0,

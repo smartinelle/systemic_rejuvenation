@@ -3,6 +3,7 @@
 import type { InterventionType, SimulationConfig } from '@/lib/types';
 import { Play, ChevronDown, ChevronUp } from 'lucide-react';
 import { useState } from 'react';
+import { getModelDefaults } from '@/lib/pyodide-loader';
 
 interface ParameterPanelProps {
   intervention: InterventionType;
@@ -20,6 +21,7 @@ export default function ParameterPanel({
   isSimulating,
 }: ParameterPanelProps) {
   const [showAdvanced, setShowAdvanced] = useState(false);
+  const interventionDefaults = getModelDefaults()?.intervention;
 
   const updateConfig = (key: keyof SimulationConfig, value: number) => {
     onChange({ ...config, [key]: value });
@@ -157,10 +159,20 @@ export default function ParameterPanel({
       <div className="mt-4 p-3 bg-bio-cyan/10 rounded-lg border border-bio-cyan/30">
         <p className="text-xs text-gray-300">
           {intervention === 'none' && 'Baseline simulation with no interventions.'}
-          {intervention === 'exercise' && 'Exercise: Boosts recovery by 30% and reduces damage accumulation by 30% (starts age 40).'}
-          {intervention === 'drug' && 'Drug therapy: Reduces shock probability and magnitude by 60% (starts age 60).'}
-          {intervention === 'parabiosis' && 'Parabiosis: Time-decaying boost to recovery (+40%), decay reduction (20%), and damage mitigation (40%) for 8 years starting at age 55.'}
-          {intervention.startsWith('organ') && `Organ replacement at age 65: ${intervention === 'organ1' ? 'Cardio only' : intervention === 'organ2' ? 'Cardio + Musc' : 'Cardio + Musc + Neuro'}.`}
+          {intervention === 'exercise' &&
+            `Exercise: Boosts recovery by 30% and reduces damage accumulation by 30% (starts age ${interventionDefaults?.exercise_start_age ?? 40}).`}
+          {intervention === 'drug' &&
+            `Drug therapy: Reduces shock probability and magnitude by 60% (starts age ${interventionDefaults?.drug_start_age ?? 60}).`}
+          {intervention === 'parabiosis' &&
+            `Parabiosis: Time-decaying boost to recovery (+40%), decay reduction (20%), and damage mitigation (40%) for 8 years starting at age ${interventionDefaults?.parabiosis_start_age ?? 55}.`}
+          {intervention.startsWith('organ') &&
+            `Organ replacement at age ${interventionDefaults?.organ_replacement_age ?? 65}: ${
+              intervention === 'organ1'
+                ? 'Cardio only'
+                : intervention === 'organ2'
+                  ? 'Cardio + Musc'
+                  : 'Cardio + Musc + Neuro'
+            }.`}
         </p>
       </div>
     </div>

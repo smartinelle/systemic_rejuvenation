@@ -14,6 +14,9 @@ Network-based dynamical model of aging that tracks fast functional health (`X`) 
   - `interventions.py` – intervention definitions and mapping
   - `simulation.py` – high-level run functions (`run_sim`, `run_many`, `run_all_scenarios`)
   - `plotting.py` – reusable matplotlib plots
+- `web/` – Next.js interactive frontend (client-side Pyodide)
+  - Runs the model in the browser via Pyodide (no backend)
+  - Uses a generated model bundle under `web/public/py/aging_network/` synced from `src/aging_network/` (single source of truth)
 - `examples/run_demo.py` – CLI demo: single trajectories + Monte Carlo scatter
 - `notebooks/01_exploration.ipynb` – quick sanity checks
 - `notebooks/02_main_results.ipynb` – reproduces key figures
