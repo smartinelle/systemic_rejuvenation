@@ -1,64 +1,77 @@
-# Aging Network Model
+# Systemic Damage Accumulation Model
 
-Network-based dynamical model of aging that tracks fast functional health (`X`) and slow structural damage (`D`) across coupled subsystems (cardio, musculoskeletal, neuro). It includes stochastic shocks, damage/recovery feedbacks, and intervention hooks (exercise, drug, organ replacement, parabiosis).
+A minimal dynamical systems model illustrating why reactive interventions fail in non-stationary biological systems — and how systemic strategies can change long-term outcomes.
 
-## Why it’s interesting
-- Captures interaction between acute shocks and slow degeneration in a compact model.
-- Supports explicit interventions with different mechanistic levers.
-- Fast to run; easy to extend for hackathon experiments or teaching.
+The model represents aging as coupled subsystems (cardio, musculoskeletal, neuro) with:
+- fast functional health states (X)
+- slow, accumulating structural damage (D)
+- stochastic shocks
+- feedback between damage and recovery capacity
+
+While developed in the context of aging, the abstraction is intentionally general and applies to any biological system where targets drift over time (e.g. tumour evolution vs immune targeting).
+
+## What the model captures
+- Coupled subsystems with asymmetric failure propagation
+- Separation between fast functional variables and slow structural damage
+- Stochastic shocks and recovery limits
+- Explicit intervention hooks with different mechanistic levers:
+  - exercise-like resilience
+  - drug-like rate modulation
+  - replacement / rejuvenation events
+  - parabiosis-like systemic effects
+
+The model is fast, interpretable, and designed for experimentation.
+
+## Live demo
+👉 Interactive frontend (Vercel):  
+[<your-vercel-link>](https://systemic-rejuvenation.vercel.app/)
+
+The demo allows you to:
+- run single trajectories
+- compare interventions
+- visualize regime shifts and collapse dynamics
+
+## Model overview
+A concise LaTeX presentation of the equations and assumptions is available here:
+
+📄 [systemic_rejuvenation.pdf](https://github.com/smartinelle/systemic_rejuvenation/blob/main/systemic_rejuvenation.pdf)
+
+This includes:
+- state variables
+- update equations
+- coupling structure
+- intervention mappings
 
 ## Repository layout
-- `src/aging_network/` – package code
-  - `config.py` – dataclasses and defaults for simulation/system/intervention parameters
-  - `model.py` – core dynamical equations and one-step integrator
-  - `interventions.py` – intervention definitions and mapping
-  - `simulation.py` – high-level run functions (`run_sim`, `run_many`, `run_all_scenarios`)
-  - `plotting.py` – reusable matplotlib plots
-- `web/` – Next.js interactive frontend (client-side Pyodide)
-  - Runs the model in the browser via Pyodide (no backend)
-  - Uses a generated model bundle under `web/public/py/aging_network/` synced from `src/aging_network/` (single source of truth)
-- `examples/run_demo.py` – CLI demo: single trajectories + Monte Carlo scatter
-- `notebooks/01_exploration.ipynb` – quick sanity checks
-- `notebooks/02_main_results.ipynb` – reproduces key figures
-- `model.ipynb` – original notebook (monolithic prototype) kept for reference
+- `src/aging_network/`
+  - `config.py` – parameter definitions
+  - `model.py` – core dynamical equations
+  - `interventions.py` – intervention definitions
+  - `simulation.py` – single and Monte Carlo runs
+  - `plotting.py` – reusable visualizations
+- `web/` – Next.js interactive frontend (Pyodide)
+  - runs the model client-side via a bundle synced from `src/aging_network/`
+- `examples/run_demo.py` – CLI demo
+- `notebooks/`
+  - `01_exploration.ipynb` – sanity checks
+  - `02_main_results.ipynb` – main figures
+- `model.ipynb` – original monolithic prototype (reference)
 
-## Model presentation
-A short LaTeX write-up of the model equations and assumptions lives in `systemic_rejuvenation.pdf` (repo root) if you prefer a concise, typeset overview.
-
-## Setup
+## Quickstart
 ```bash
 python -m venv .venv
 source .venv/bin/activate
-# install deps
-pip install -r requirements.txt
-# install the package in editable mode
 pip install -e .
-```
-
-## Quickstart
-Run the demo (shows figures; optionally save them):
-```bash
 python examples/run_demo.py --runs 80 --output figs
-# omit --output to open interactive windows instead of saving
 ```
 
-## Reproduce the main figures
-1. Launch Jupyter: `jupyter lab` (or `jupyter notebook`).
-2. Open `notebooks/02_main_results.ipynb`.
-3. Run all cells. The notebook calls into `aging_network` to generate the time-series plots and the healthspan vs lifespan scatter.
-
-## API highlights
-```python
-from aging_network import run_sim, run_many, default_simulation_config
-
-cfg = default_simulation_config()
-result = run_sim("exercise", sim_config=cfg)
-hs, ls = run_many("parabiosis", n_runs=200, sim_config=cfg)
+## Run the web app (Pyodide frontend)
+```bash
+cd web
+npm install          # first time
+npm run dev          # auto-syncs Python bundle from ../src
+# open http://localhost:3000
 ```
 
-## Dependencies
-- Python >= 3.9
-- numpy
-- matplotlib
-
-Install via the included `pyproject.toml` with `pip install -e .`.
+## Notes & extensions
+- An experimental branch explores calibration and ML-based parameter inference. This is intentionally kept separate from the core model.
