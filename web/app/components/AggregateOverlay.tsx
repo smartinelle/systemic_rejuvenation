@@ -46,42 +46,42 @@ export default function AggregateOverlay({ results, config }: AggregateOverlayPr
 
   const shapes = [
     {
-      type: 'line',
+      type: 'line' as const,
       x0: resMinAge(results),
       x1: resMaxAge(results),
       y0: config.func_threshold,
       y1: config.func_threshold,
-      line: { color: '#FCD34D', width: 1, dash: 'dot' },
+      line: { color: '#FCD34D', width: 1, dash: 'dot' as const },
     },
     {
-      type: 'line',
+      type: 'line' as const,
       x0: resMinAge(results),
       x1: resMaxAge(results),
       y0: config.death_threshold,
       y1: config.death_threshold,
-      line: { color: '#DC2626', width: 1, dash: 'dot' },
+      line: { color: '#DC2626', width: 1, dash: 'dot' as const },
     },
     ...filtered.flatMap(([id, res]) => {
       const color = COLORS[id] || '#6B7280';
       const markers = [];
       if (res.healthspan) {
         markers.push({
-          type: 'line',
+          type: 'line' as const,
           x0: res.healthspan,
           x1: res.healthspan,
           y0: 0,
           y1: 1,
-          line: { color, width: 1, dash: 'dot' },
+          line: { color, width: 1, dash: 'dot' as const },
         });
       }
       if (res.lifespan) {
         markers.push({
-          type: 'line',
+          type: 'line' as const,
           x0: res.lifespan,
           x1: res.lifespan,
           y0: 0,
           y1: 1,
-          line: { color, width: 2, dash: 'dash' },
+          line: { color, width: 2, dash: 'dash' as const },
         });
       }
       return markers;
