@@ -74,7 +74,13 @@ export default function TrajectoryChart({ result, config, intervention }: Trajec
     line: { color: '#8B5CF6', width: 2, dash: 'dashdot' as const },
   } : null;
 
-  const data = [...xTraces, ...dTraces, funcThresholdTrace, deathThresholdTrace, ...(interventionMarker ? [interventionMarker] : [])];
+  const data = [
+    ...xTraces,
+    ...dTraces,
+    funcThresholdTrace,
+    deathThresholdTrace,
+    ...(interventionMarker ? [interventionMarker] : []),
+  ];
 
   const layout = {
     title: {

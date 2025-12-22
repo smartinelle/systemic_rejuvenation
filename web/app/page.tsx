@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { initializePyodide, runSimulation, type LoadingProgress, getModelDefaults } from '@/lib/pyodide-loader';
 import type { SimulationResult, InterventionType, SimulationConfig } from '@/lib/types';
 import { DEFAULT_SIMULATION_CONFIG } from '@/lib/types';
@@ -12,16 +12,29 @@ import MetricsPanel from './components/MetricsPanel';
 import Header from './components/Header';
 import NetworkGraph from './components/NetworkGraph';
 import MonteCarloPanel from './components/MonteCarloPanel';
+import AggregateOverlay from './components/AggregateOverlay';
+import InterventionSummaryTable from './components/InterventionSummaryTable';
+
+const ALL_INTERVENTIONS: InterventionType[] = ['none', 'exercise', 'drug', 'parabiosis', 'organ1', 'organ2', 'organ3'];
+
+type ResultsMap = Partial<Record<InterventionType, SimulationResult>>;
 
 export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
   const [loadingProgress, setLoadingProgress] = useState<LoadingProgress | null>(null);
   const [intervention, setIntervention] = useState<InterventionType>('none');
   const [config, setConfig] = useState<SimulationConfig>(DEFAULT_SIMULATION_CONFIG);
-  const [result, setResult] = useState<SimulationResult | null>(null);
-  const [baselineResult, setBaselineResult] = useState<SimulationResult | null>(null);
-  const [isSimulating, setIsSimulating] = useState(false);
+  const [results, setResults] = useState<ResultsMap>({});
+  const [batchStatus, setBatchStatus] = useState<{ running: boolean; completed: number; total: number; error: string | null }>({
+    running: false,
+    completed: 0,
+    total: ALL_INTERVENTIONS.length,
+    error: null,
+  });
   const [error, setError] = useState<string | null>(null);
+  const [viewMode, setViewMode] = useState<'aggregate' | 'single'>('aggregate');
+
+  const runIdRef = useRef(0);
 
   // Initialize Pyodide on mount
   useEffect(() => {
@@ -35,12 +48,6 @@ export default function Home() {
         setConfig(initialConfig);
 
         setIsLoading(false);
-        // Run baseline simulation
-        return runSimulation('none', initialConfig);
-      })
-      .then((result) => {
-        setBaselineResult(result);
-        setResult(result);
       })
       .catch((err) => {
         setError(err.message);
@@ -48,35 +55,49 @@ export default function Home() {
       });
   }, []);
 
-  // Run simulation when intervention or config changes
-  const handleRunSimulation = async () => {
+  const runAllInterventions = async (cfg: SimulationConfig) => {
     if (isLoading) return;
-
-    setIsSimulating(true);
+    const runId = ++runIdRef.current;
+    setBatchStatus({ running: true, completed: 0, total: ALL_INTERVENTIONS.length, error: null });
+    setResults({});
     setError(null);
 
     try {
-      const newResult = await runSimulation(intervention, config);
-      setResult(newResult);
+      for (let i = 0; i < ALL_INTERVENTIONS.length; i++) {
+        const intv = ALL_INTERVENTIONS[i];
+        const res = await runSimulation(intv, cfg);
+        if (runId !== runIdRef.current) {
+          // stale run; abort updates
+          return;
+        }
+        setResults((prev) => ({ ...prev, [intv]: res }));
+        setBatchStatus({ running: true, completed: i + 1, total: ALL_INTERVENTIONS.length, error: null });
+      }
+      setBatchStatus({ running: false, completed: ALL_INTERVENTIONS.length, total: ALL_INTERVENTIONS.length, error: null });
     } catch (err: any) {
-      setError(err.message);
-    } finally {
-      setIsSimulating(false);
+      if (runId !== runIdRef.current) return;
+      const message = err?.message ?? String(err);
+      setBatchStatus({ running: false, completed: 0, total: ALL_INTERVENTIONS.length, error: message });
+      setError(message);
     }
   };
 
-  // Auto-run when intervention changes
+  // Debounced rerun when config changes
   useEffect(() => {
-    if (!isLoading && !isSimulating) {
-      handleRunSimulation();
-    }
-  }, [intervention]);
+    if (isLoading) return;
+    const handle = setTimeout(() => runAllInterventions(config), 250);
+    return () => clearTimeout(handle);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [config]);
+
+  const selectedResult = results[intervention] ?? null;
+  const baselineResult = results['none'] ?? null;
 
   if (isLoading) {
     return <SimulationEngine loadingProgress={loadingProgress} />;
   }
 
-  if (error && !result) {
+  if (error && Object.keys(results).length === 0) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="glass-panel p-8 max-w-md">
@@ -96,35 +117,66 @@ export default function Home() {
         <div className="grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-6 max-w-7xl mx-auto">
         {/* Sidebar */}
         <aside className="space-y-6">
-          <InterventionTabs
-            selected={intervention}
-            onChange={setIntervention}
-          />
-          <ParameterPanel
-            intervention={intervention}
-            config={config}
-            onChange={setConfig}
-            onRunSimulation={handleRunSimulation}
-            isSimulating={isSimulating}
-          />
+          <div className="glass-panel p-4 space-y-3">
+            <div className="flex items-center justify-between">
+              <h3 className="text-lg font-semibold text-bio-cyan">View</h3>
+            </div>
+            <div className="grid grid-cols-2 gap-2">
+              <button
+                onClick={() => setViewMode('aggregate')}
+                className={`px-3 py-2 rounded-lg text-sm ${viewMode === 'aggregate' ? 'bg-bio-violet/30 border border-bio-violet' : 'glass-panel-hover'}`}
+              >
+                Aggregate
+              </button>
+              <button
+                onClick={() => setViewMode('single')}
+                className={`px-3 py-2 rounded-lg text-sm ${viewMode === 'single' ? 'bg-bio-violet/30 border border-bio-violet' : 'glass-panel-hover'}`}
+              >
+                Single
+              </button>
+            </div>
+          </div>
+
+          {viewMode === 'single' && (
+            <>
+              <InterventionTabs
+                selected={intervention}
+                onChange={setIntervention}
+              />
+              <ParameterPanel
+                intervention={intervention}
+                config={config}
+                onChange={setConfig}
+                onRunSimulation={() => runAllInterventions(config)}
+                isSimulating={batchStatus.running}
+              />
+            </>
+          )}
         </aside>
 
         {/* Visualization Area */}
         <div className="space-y-6">
-          {result && (
+          {viewMode === 'aggregate' && Object.keys(results).length > 0 && (
+            <>
+              <AggregateOverlay results={results} config={config} />
+              <InterventionSummaryTable results={results} />
+            </>
+          )}
+
+          {viewMode === 'single' && selectedResult && (
             <>
               <TrajectoryChart
-                result={result}
+                result={selectedResult}
                 config={config}
                 intervention={intervention}
               />
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <MetricsPanel
-                  result={result}
+                  result={selectedResult}
                   baseline={baselineResult}
                   intervention={intervention}
                 />
-                <NetworkGraph result={result} />
+                <NetworkGraph result={selectedResult} />
               </div>
               <MonteCarloPanel
                 intervention={intervention}
@@ -133,16 +185,16 @@ export default function Home() {
               />
             </>
           )}
-          {isSimulating && (
+          {batchStatus.running && (
             <div className="glass-panel p-8 text-center">
               <div className="animate-pulse text-bio-cyan">
-                Running simulation...
+                Running all interventions... ({batchStatus.completed}/{batchStatus.total})
               </div>
             </div>
           )}
-          {error && result && (
+          {batchStatus.error && (
             <div className="glass-panel p-4 border-red-500/50">
-              <p className="text-red-400 text-sm">{error}</p>
+              <p className="text-red-400 text-sm">{batchStatus.error}</p>
             </div>
           )}
         </div>

@@ -87,7 +87,7 @@ export default function AboutModal({ onClose }: AboutModalProps) {
             <p className="text-sm text-gray-400">
               For detailed mathematical derivations and biological justification, see the{' '}
               <a
-                href="https://github.com/smartinelle/systemic_rejuvenation/blob/main/model.pdf"
+                href="https://github.com/smartinelle/systemic_rejuvenation/blob/main/systemic_rejuvenation.pdf"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-bio-cyan hover:underline"

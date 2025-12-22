@@ -36,7 +36,7 @@ export default function Header() {
             </a>
 
             <a
-              href="https://github.com/smartinelle/systemic_rejuvenation/blob/main/model.pdf"
+              href="https://github.com/smartinelle/systemic_rejuvenation/blob/main/systemic_rejuvenation.pdf"
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-2 px-4 py-2 glass-panel-hover rounded-lg transition-colors text-sm"

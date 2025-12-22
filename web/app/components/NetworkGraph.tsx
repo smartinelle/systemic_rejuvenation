@@ -6,12 +6,13 @@ import type { SimulationResult } from '@/lib/types';
 
 interface NetworkGraphProps {
   result: SimulationResult;
+  ageIndex?: number;
 }
 
 const SUBSYSTEM_NAMES = ['Cardio', 'Musc', 'Neuro'];
 const COLORS = ['#00D9FF', '#00FF88', '#8B5CF6']; // cyan, green, violet
 
-export default function NetworkGraph({ result }: NetworkGraphProps) {
+export default function NetworkGraph({ result, ageIndex }: NetworkGraphProps) {
   const svgRef = useRef<SVGSVGElement>(null);
 
   useEffect(() => {
@@ -22,8 +23,12 @@ export default function NetworkGraph({ result }: NetworkGraphProps) {
     const svg = d3.select(svgRef.current);
     svg.selectAll('*').remove(); // Clear previous render
 
-    // Get latest X values for node coloring
-    const latestX = result.X[result.X.length - 1];
+    // Choose timestep
+    const idx =
+      typeof ageIndex === 'number'
+        ? Math.min(Math.max(Math.floor(ageIndex), 0), result.X.length - 1)
+        : result.X.length - 1;
+    const latestX = result.X[idx];
 
     // Define nodes (3 subsystems)
     const nodes = SUBSYSTEM_NAMES.map((name, i) => ({
