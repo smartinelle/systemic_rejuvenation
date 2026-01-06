@@ -24,7 +24,7 @@ The model is fast, interpretable, and designed for experimentation.
 
 ## Live demo
 👉 Interactive frontend (Vercel):  
-[<your-vercel-link>](https://systemic-rejuvenation.vercel.app/)
+[https://systemic-rejuvenation.vercel.app/](https://systemic-rejuvenation.vercel.app/)
 
 The demo allows you to:
 - run single trajectories
